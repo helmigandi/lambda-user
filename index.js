@@ -9,7 +9,7 @@ exports.handler = async (event) => {
       break;
 
     case "/simpleUserFunction/getUserJson":
-      UserController.getUserJson(event.httpMethod);
+      dataUser = UserController.getUserJson(event.httpMethod);
       break;
 
     default:
@@ -21,11 +21,20 @@ exports.handler = async (event) => {
       };
   }
 
-  const response = {
-    statusCode: dataUser.statusCode,
-    body: JSON.stringify(
-      dataUser.message ? { message: dataUser.message } : dataUser.values
-    ),
-  };
+  let response = {};
+  if (dataUser.headers) {
+    response = {
+      statusCode: dataUser.statusCode,
+      headers: dataUser.headers,
+      body: JSON.stringify(dataUser.values, null, 2),
+    };
+  } else {
+    response = {
+      statusCode: dataUser.statusCode,
+      body: JSON.stringify(
+        dataUser.message ? { message: dataUser.message } : dataUser.values
+      ),
+    };
+  }
   return response;
 };
