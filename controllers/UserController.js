@@ -4,6 +4,13 @@ class UserController {
   static getUserData(httpMethod) {
     const data = this.getUserFile(httpMethod);
 
+    if (data.statusCode == 500) {
+      return {
+        statusCode: 500,
+        message: data.message,
+      };
+    }
+
     return {
       statusCode: 200,
       values: data,
@@ -12,6 +19,13 @@ class UserController {
 
   static getUserJson(httpMethod) {
     const data = this.getUserFile(httpMethod);
+
+    if (data.statusCode == 500) {
+      return {
+        statusCode: 500,
+        message: data.message,
+      };
+    }
 
     return {
       statusCode: 200,
