@@ -2,6 +2,7 @@ const UserController = require("./controllers/UserController.js");
 
 exports.handler = async (event) => {
   let dataUser = null;
+  let response = {};
 
   switch (event.path) {
     case "/simpleUserFunction/getUserData":
@@ -21,7 +22,7 @@ exports.handler = async (event) => {
       };
   }
 
-  let response = {};
+  // for output JSON File and array of object
   if (dataUser.headers) {
     response = {
       statusCode: dataUser.statusCode,
