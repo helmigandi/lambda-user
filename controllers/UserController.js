@@ -2,28 +2,42 @@ const fs = require("fs");
 
 class UserController {
   static getUserData(httpMethod) {
-    if (httpMethod != "GET") {
+    const data = this.getUserFile(httpMethod);
+
+    if (data.statusCode == 500) {
       return {
         statusCode: 500,
-        message: "HTTP Method is Not Supported",
+        message: data.message,
       };
     }
-    try {
-      let data = fs.readFileSync("/var/task/data/users.json");
-      data = JSON.parse(data);
-      return {
-        statusCode: 200,
-        values: data,
-      };
-    } catch (err) {
-      return {
-        statusCode: 500,
-        message: err.message,
-      };
-    }
+
+    return {
+      statusCode: 200,
+      values: data,
+    };
   }
 
   static getUserJson(httpMethod) {
+    const data = this.getUserFile(httpMethod);
+
+    if (data.statusCode == 500) {
+      return {
+        statusCode: 500,
+        message: data.message,
+      };
+    }
+
+    return {
+      statusCode: 200,
+      headers: {
+        "Content-type": "application/json",
+        "Content-Disposition": "attachment; filename=user-data.json",
+      },
+      values: data,
+    };
+  }
+
+  static getUserFile(httpMethod) {
     if (httpMethod != "GET") {
       return {
         statusCode: 500,
@@ -33,16 +47,8 @@ class UserController {
     try {
       let data = fs.readFileSync("/var/task/data/users.json");
       data = JSON.parse(data);
-      return {
-        statusCode: 200,
-        headers: {
-          'Content-type' : 'application/json',
-          'Content-Disposition': 'attachment; filename=user-data.json'
-        },
-        values: data,
-      };
+      return data;
     } catch (err) {
-      console.log("CATCH", err);
       return {
         statusCode: 500,
         message: err.message,
